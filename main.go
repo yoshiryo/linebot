@@ -2,21 +2,15 @@ package main
 
 // 利用したい外部のコードを読み込む
 import (
-	"bytes"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"math/rand"
 	"net/http"
 	"strings"
 	"time"
 
-	"github.com/PuerkitoBio/goquery"
-	"github.com/line/line-bot-sdk-go/linebot"
-	"github.com/saintfish/chardet"
-	"golang.org/x/net/html/charset"
 	_ "github.com/go-sql-driver/mysql"
-    "github.com/jinzhu/gorm"
+	"github.com/line/line-bot-sdk-go/linebot"
 )
 
 const verifyToken = "00000000000000000000000000000000"
@@ -136,61 +130,4 @@ func getFortune() string {
 	}
 	// rand.Intn(10)は1～10のランダムな整数を返す
 	return oracles[rand.Intn(10)]
-}
-
-func getTrainTime(sta_station, des_station string) string {
-	url := "https://transit.yahoo.co.jp/search/result?flatlon=&fromgid=&from=" + sta_station + "&tlatlon=&togid=&to=" + des_station + "&viacode=&via=&viacode=&via=&viacode=&via=&y=&m=&d=&hh=&m2=&m1=&type=1&ticket=ic&expkind=1&ws=3&s=0&al=1&shin=1&ex=1&hb=1&lb=1&sr=1&kw=" + des_station
-
-	// Getリクエスト
-	res, _ := http.Get(url)
-	defer res.Body.Close()
-
-	// 読み取り
-	buf, _ := ioutil.ReadAll(res.Body)
-
-	// 文字コード判定
-	det := chardet.NewTextDetector()
-	detRslt, _ := det.DetectBest(buf)
-	// => EUC-JP
-
-	// 文字コード変換
-	bReader := bytes.NewReader(buf)
-	reader, _ := charset.NewReaderLabel(detRslt.Charset, bReader)
-
-	// HTMLパース
-	doc, _ := goquery.NewDocumentFromReader(reader)
-
-	// titleを抜き出し
-	rslt := doc.Find(".time").Text()
-	return rslt
-}
-add_Manga(manga string) string {
-	db, err := sqlConnect()
-	if err != nil {
-		panic(err.Error())
-	} 
-	defer db.Close()
- 
-    error := db.Create(&Users{
-        Name:          manga,
-		release_time:  t,
-        UpdateAt: getDate(),
-    }).Error
-    if error != nil {
-        fmt.Println(error)
-    }
-	return ("追加しました") 
-}
-
-
-// SQLConnect DB接続
-func sqlConnect() (database *gorm.DB, err error) {
-	DBMS := "mysql"
-	USER := "go_example"
-	PASS := "12345!"
-	PROTOCOL := "tcp(localhost:3306)"
-	DBNAME := "go_example"
-
-	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME + "?charset=utf8&parseTime=true&loc=Asia%2FTokyo"
-	return gorm.Open(DBMS, CONNECT)
 }
