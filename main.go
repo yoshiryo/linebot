@@ -20,9 +20,9 @@ func main() {
 	// ランダムな数値を生成する際のシード値の設定
 	rand.Seed(time.Now().UnixNano())
 
-	ChanellSecret := "ef6c38e18536dcfe37ea3f7103dfbf3d"
-	ChanellToken := "2/nj45Eap/xlWsQOBMuWQ52n14ZttH1jRa/+1b078ELyvT8Nris0Xjd82vfPr1ZbaVGE8aU0Qn2b/3gWNqsEPivCoavF1BcekmuovjK5rxlmNnF/ffzxLtbejPgBDGzwk8aPGqB1o7ttXlRnpxz1EQdB04t89/1O/w1cDnyilFU="
-	Port := "8080"
+	ChanellSecret := ""
+	ChanellToken := ""
+	Port := ""
 	bot, err := linebot.New(ChanellSecret, ChanellToken)
 	if err != nil {
 		log.Fatal(err)
