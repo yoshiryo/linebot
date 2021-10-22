@@ -1,14 +1,14 @@
 DROP DATABASE IF EXISTS linebot;
 CREATE DATABASE linebot;
 
-DROP TABLE IF EXISTS linebot.manga;
+DROP TABLE IF EXISTS linebot.stations;
 
-CREATE TABLE linebot.manga
+CREATE TABLE linebot.stations
 (
-    id              INTEGER             NOT NULL PRIMARY KEY,
-    cve_id          VARCHAR(100)        NOT NULL,
-    name            VARCHAR(64)         NOT NULL,
-    version         VARCHAR(20)                 ,
-    cve_score       VARCHAR(50)                 ,
-    priority        VARCHAR(30)                                
-);
+    id              INT                 NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name            VARCHAR(20)         NOT NULL,
+    first_station   VARCHAR(50)         NOT NULL,
+    second_station  VARCHAR(50)         NOT NULL                      
+)DEFAULT CHARACTER SET=utf8;
+use linebot;
+INSERT INTO stations (name, first_station, second_station) VALUES ("行き", "東青梅", "立川");

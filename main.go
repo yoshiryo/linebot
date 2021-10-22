@@ -3,12 +3,9 @@ package main
 import (
 	"fmt"
 	"log"
-	"math/rand"
 	"net/http"
 	"strings"
-	"time"
 
-	"url/manga"
 	"url/train"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -19,15 +16,17 @@ const verifyToken = "00000000000000000000000000000000"
 
 const helpMessage = `使い方
 テキストメッセージ:
-	"おみくじ"がメッセージに入ってれば今日の運勢を占うよ！
 	"!manga"を送れば
-	"!train"を送れば電車時間がわかるよ！
+	"!train [発車駅] [到着駅]"を送れば電車時間がわかるよ！
+	"!addstation [発車駅] [到着駅] [ルート名]"を送れば電車のルート登録ができるよ！
+	"!showroute"を送れば登録したルートがわかるよ！
+	"!useroute [ルート名]"を送ればルート登録したもので電車時間がわかるよ！
 	それ以外はやまびこを返すよ！
 スタンプ:
 	スタンプの情報を答えるよ！
 それ以外:
 	それ以外にはまだ対応してないよ！ごめんね...`
-	
+
 func main() {
 
 	ChanellSecret := "10db005b09514726670d87966b5a443c"
@@ -86,23 +85,36 @@ func getReplyMessage(event *linebot.Event, bot *linebot.Client) (replyMessage st
 	switch message := event.Message.(type) {
 	// テキストメッセージが来たとき
 	case *linebot.TextMessage:
-		// さらに「おみくじ」という文字列が含まれているとき
-		if message.Text == "おみくじ" {
-			// おみくじ結果を取得する
-			return getFortune()
-		} 
-		else if strings.Contains(message.Text, "!train") {
+		// !trainを含むとき
+		if strings.Contains(message.Text, "!train") {
 			words := strings.Fields(message.Text)
 			if len(words) == 3 {
 				return train.GetTrainTime(words[1], words[2])
 			}
-		} 
-		else if strings.Contains(message.Text, "!addmanga") {
+		} else if strings.Contains(message.Text, "!addstation") {
+			words := strings.Fields(message.Text)
+			if len(words) == 4 {
+				return train.InsertStation(words[1], words[2], words[3])
+			}
+		} else if strings.Contains(message.Text, "!showroute") {
+			return train.GetStation()
+		} else if strings.Contains(message.Text, "!useroute") {
 			words := strings.Fields(message.Text)
 			if len(words) == 2 {
-				return manga.Add_Manga(words[1])
+				return train.UseRoute(words[1])
 			}
+		} else if strings.Contains(message.Text, "!help") {
+			return helpMessage
 		}
+		// !addmangaを含むとき
+		/*
+			else if strings.Contains(message.Text, "!addmanga") {
+				words := strings.Fields(message.Text)
+				if len(words) == 2 {
+					return manga.Add_Manga(words[1])
+				}
+			}
+		*/
 		// そうじゃないときはオウム返しする
 		return message.Text
 	// スタンプが来たとき
@@ -114,4 +126,3 @@ func getReplyMessage(event *linebot.Event, bot *linebot.Client) (replyMessage st
 		return helpMessage
 	}
 }
-
