@@ -29,8 +29,8 @@ const helpMessage = `使い方
 
 func main() {
 
-	ChanellSecret := "10db005b09514726670d87966b5a443c"
-	ChanellToken := "Jc5PdOo/OR+MwtnjzgIrslHYbCxU9TzNocjLcwEaIHS07EGIJQHTJi7Z0ppNAcY6Yh2hvRH+BsMxH8CSZwnVPSkHgUhOEk1RgdH9VEk6ksvfWviGyUzOCStt7FoDSt0dOoqwMYNlPwaY89e4vGy67QdB04t89/1O/w1cDnyilFU="
+	ChanellSecret := ""
+	ChanellToken := ""
 	Port := "8080"
 	bot, err := linebot.New(ChanellSecret, ChanellToken)
 	if err != nil {
