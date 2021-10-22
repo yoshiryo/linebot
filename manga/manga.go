@@ -25,9 +25,9 @@ func Add_Manga(manga string) string {
 	defer db.Close()
 
 	error := db.Create(&data.Users{
-		Name:         manga,
-		release_time: t,
-		UpdateAt:     getDate(),
+		Name:     manga,
+		Release:  t,
+		UpdateAt: getDate(),
 	}).Error
 	if error != nil {
 		fmt.Println(error)
@@ -67,24 +67,3 @@ func getDate() string {
 	now := time.Now()
 	return now.Format(layout)
 }
-
-/* SQLConnect DB接続
-func sqlConnect() (database *gorm.DB, err error) {
-	DBMS := "mysql"
-	USER := "go_example"
-	PASS := "12345!"
-	PROTOCOL := "tcp(localhost:3306)"
-	DBNAME := "go_example"
-
-	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME + "?charset=utf8&parseTime=true&loc=Asia%2FTokyo"
-	return gorm.Open(DBMS, CONNECT)
-}
-
-
-type Users struct {
-	ID           int
-	Name         string `json:"name"`
-	release_time int
-	UpdateAt     string `json:"updateAt" sql:"not null;type:date"`
-}
-*/

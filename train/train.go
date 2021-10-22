@@ -40,24 +40,28 @@ func GetTrainTime(sta_station, des_station string) string {
 	doc, _ := goquery.NewDocumentFromReader(reader)
 
 	// titleを抜き出し
-	rslt := doc.Find(".time").Text()
-	rslt = rslt[strings.Index(rslt, "出発"):]
-	rslt = strings.Replace(rslt, "出発", "", -1)
+	result := doc.Find(".time").Text()
+	//取得した文字列を適切な文に変更
+	result = result[strings.Index(result, "出発"):]
+	result = strings.Replace(result, "出発", "", -1)
 
-	rslt = sta_station + "  " + des_station + "  所要時間" + "\n" +
-		rslt[:13] + "　" + rslt[13:18] +
-		rslt[18:31] + "　" + rslt[31:36] +
-		rslt[36:49] + "　" + rslt[49:54]
-	return rslt
+	//返信のための文字列を作成
+	result = sta_station + "  " + des_station + "  所要時間" + "\n" +
+		result[:13] + "　" + result[13:18] +
+		result[18:31] + "　" + result[31:36] +
+		result[36:49] + "　" + result[49:54]
+	return result
 }
 
 func InsertStation(sta_station, des_station, name string) string {
+	//mysqlとの接続開始
 	db, err := db.SqlConnect()
 	if err != nil {
 		panic(err.Error())
 	}
 	defer db.Close()
 
+	//mysqlにinsertする
 	error := db.Create(&data.Stations{
 		Name:           name,
 		First_Station:  sta_station,
@@ -70,53 +74,63 @@ func InsertStation(sta_station, des_station, name string) string {
 }
 
 func GetStation() string {
+	//mysqlとの接続開始
 	db, err := db.SqlConnect()
 	if err != nil {
 		panic(err.Error())
 	}
 	defer db.Close()
-	result := []*data.Stations{}
-	error := db.Find(&result).Error
+
+	//
+	db_result := []*data.Stations{}
+	//select * from stationsと同義
+	error := db.Find(&db_result).Error
 	if error != nil {
 		fmt.Println(error)
-	} else if len(result) == 0 {
+	} else if len(db_result) == 0 {
 		return "登録されてないよ！"
 	}
 
-	kekka := ""
-	for i, user := range result {
+	result := ""
+	//selectで取得したものを一つずつ適切な形に処理
+	for i, user := range db_result {
 		name := user.Name
 		first_station := user.First_Station
 		second_station := user.Second_Station
+		//返信のための文字列を作成
 		if i != len(result)-1 {
-			kekka += "名前" + strconv.Itoa(i+1) + "：" + name + "\n" +
+			result += "名前" + strconv.Itoa(i+1) + "：" + name + "\n" +
 				"発車駅：" + first_station + "\n" +
 				"到着駅：" + second_station + "\n" +
 				"\n"
 		} else {
-			kekka += "名前" + strconv.Itoa(i+1) + "：" + name + "\n" +
+			result += "名前" + strconv.Itoa(i+1) + "：" + name + "\n" +
 				"発車駅：" + first_station + "\n" +
 				"到着駅：" + second_station
 		}
 
 	}
-	return kekka
+	return result
 }
 
 func UseRoute(name string) string {
+	//mysqlとの接続開始
 	db, err := db.SqlConnect()
 	if err != nil {
 		panic(err.Error())
 	}
 	defer db.Close()
-	result := []*data.Stations{}
-	error := db.Where("name = ?", name).First(&result).Error
+	//
+	db_result := []*data.Stations{}
+	//select * from stations where name = "?"と同義
+	error := db.Where("name = ?", name).First(&db_result).Error
 	if error != nil {
 		fmt.Println(error)
-	} else if len(result) == 0 {
+	} else if len(db_result) == 0 {
 		return "登録されてないよ！"
 	}
-	first_station := result[0].First_Station
-	second_station := result[0].Second_Station
+	first_station := db_result[0].First_Station
+	second_station := db_result[0].Second_Station
+	//GetTrainTime関数を使って時刻を割り出してreturn
 	return GetTrainTime(first_station, second_station)
 }
