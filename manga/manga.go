@@ -7,22 +7,24 @@ import (
 	"net/http"
 	"time"
 
+	"url/data"
+	"url/db"
+
 	"github.com/PuerkitoBio/goquery"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/jinzhu/gorm"
 	"github.com/saintfish/chardet"
 	"golang.org/x/net/html/charset"
 )
 
-func add_Manga(manga string) string {
+func Add_Manga(manga string) string {
 	t := getReleaseMangeTime(manga)
-	db, err := sqlConnect()
+	db, err := db.SqlConnect()
 	if err != nil {
 		panic(err.Error())
 	}
 	defer db.Close()
 
-	error := db.Create(&Users{
+	error := db.Create(&data.Users{
 		Name:         manga,
 		release_time: t,
 		UpdateAt:     getDate(),
@@ -66,7 +68,7 @@ func getDate() string {
 	return now.Format(layout)
 }
 
-// SQLConnect DB接続
+/* SQLConnect DB接続
 func sqlConnect() (database *gorm.DB, err error) {
 	DBMS := "mysql"
 	USER := "go_example"
@@ -78,9 +80,11 @@ func sqlConnect() (database *gorm.DB, err error) {
 	return gorm.Open(DBMS, CONNECT)
 }
 
+
 type Users struct {
 	ID           int
 	Name         string `json:"name"`
 	release_time int
 	UpdateAt     string `json:"updateAt" sql:"not null;type:date"`
 }
+*/

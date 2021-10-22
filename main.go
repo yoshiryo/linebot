@@ -1,6 +1,5 @@
 package main
 
-// 利用したい外部のコードを読み込む
 import (
 	"fmt"
 	"log"
@@ -9,20 +8,31 @@ import (
 	"strings"
 	"time"
 
+	"url/manga"
+	"url/train"
+
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/line/line-bot-sdk-go/linebot"
 )
 
 const verifyToken = "00000000000000000000000000000000"
 
-// main関数は最初に呼び出されることが決まっている
+const helpMessage = `使い方
+テキストメッセージ:
+	"おみくじ"がメッセージに入ってれば今日の運勢を占うよ！
+	"!manga"を送れば
+	"!train"を送れば電車時間がわかるよ！
+	それ以外はやまびこを返すよ！
+スタンプ:
+	スタンプの情報を答えるよ！
+それ以外:
+	それ以外にはまだ対応してないよ！ごめんね...`
+	
 func main() {
-	// ランダムな数値を生成する際のシード値の設定
-	rand.Seed(time.Now().UnixNano())
 
-	ChanellSecret := ""
-	ChanellToken := ""
-	Port := ""
+	ChanellSecret := "10db005b09514726670d87966b5a443c"
+	ChanellToken := "Jc5PdOo/OR+MwtnjzgIrslHYbCxU9TzNocjLcwEaIHS07EGIJQHTJi7Z0ppNAcY6Yh2hvRH+BsMxH8CSZwnVPSkHgUhOEk1RgdH9VEk6ksvfWviGyUzOCStt7FoDSt0dOoqwMYNlPwaY89e4vGy67QdB04t89/1O/w1cDnyilFU="
+	Port := "8080"
 	bot, err := linebot.New(ChanellSecret, ChanellToken)
 	if err != nil {
 		log.Fatal(err)
@@ -70,15 +80,6 @@ func main() {
 	}
 }
 
-const helpMessage = `使い方
-テキストメッセージ:
-	"おみくじ"がメッセージに入ってれば今日の運勢を占うよ！
-	それ以外はやまびこを返すよ！
-スタンプ:
-	スタンプの情報を答えるよ！
-それ以外:
-	それ以外にはまだ対応してないよ！ごめんね...`
-
 // 返信を生成する
 func getReplyMessage(event *linebot.Event, bot *linebot.Client) (replyMessage string) {
 	// 来たメッセージの種類によって分岐する
@@ -89,45 +90,28 @@ func getReplyMessage(event *linebot.Event, bot *linebot.Client) (replyMessage st
 		if message.Text == "おみくじ" {
 			// おみくじ結果を取得する
 			return getFortune()
-		} else if strings.Contains(message.Text, "電車") {
+		} 
+		else if strings.Contains(message.Text, "!train") {
 			words := strings.Fields(message.Text)
 			if len(words) == 3 {
-				return getTrainTime(words[1], words[2])
+				return train.GetTrainTime(words[1], words[2])
 			}
-		} else if strings.Contains(message.Text, "addmanga") {
+		} 
+		else if strings.Contains(message.Text, "!addmanga") {
 			words := strings.Fields(message.Text)
 			if len(words) == 2 {
-				return add_Manga(words[1])
+				return manga.Add_Manga(words[1])
 			}
 		}
 		// そうじゃないときはオウム返しする
 		return message.Text
-
 	// スタンプが来たとき
 	case *linebot.StickerMessage:
 		replyMessage := fmt.Sprintf("sticker id is %s, stickerResourceType is %s", message.StickerID, message.StickerResourceType)
 		return replyMessage
-
 	// どっちでもないとき
 	default:
 		return helpMessage
 	}
 }
 
-// おみくじ結果の生成
-func getFortune() string {
-	oracles := map[int]string{
-		0: "大吉",
-		1: "中吉",
-		2: "小吉",
-		3: "末吉",
-		4: "吉",
-		5: "凶",
-		6: "末凶",
-		7: "小凶",
-		8: "中凶",
-		9: "大凶",
-	}
-	// rand.Intn(10)は1～10のランダムな整数を返す
-	return oracles[rand.Intn(10)]
-}

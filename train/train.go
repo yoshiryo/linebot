@@ -12,7 +12,7 @@ import (
 	"golang.org/x/net/html/charset"
 )
 
-func getTrainTime(sta_station, des_station string) string {
+func GetTrainTime(sta_station, des_station string) string {
 	url := "https://transit.yahoo.co.jp/search/result?flatlon=&fromgid=&from=" + sta_station + "&tlatlon=&togid=&to=" + des_station + "&viacode=&via=&viacode=&via=&viacode=&via=&y=&m=&d=&hh=&m2=&m1=&type=1&ticket=ic&expkind=1&ws=3&s=0&al=1&shin=1&ex=1&hb=1&lb=1&sr=1&kw=" + des_station
 
 	// Getリクエスト
