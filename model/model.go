@@ -2,7 +2,6 @@ package model
 
 type Manga struct {
 	Name     string
-	Release  string
 	UpdateAt string
 }
 
