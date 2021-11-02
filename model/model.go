@@ -1,6 +1,6 @@
-package data
+package model
 
-type Users struct {
+type Manga struct {
 	Name     string
 	Release  string
 	UpdateAt string

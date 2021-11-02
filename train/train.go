@@ -6,10 +6,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
-	"url/data"
-	"url/db"
+
+	"github.com/yoshiryo/linebot/db"
+	"github.com/yoshiryo/linebot/model"
 
 	"github.com/PuerkitoBio/goquery"
 	_ "github.com/go-sql-driver/mysql"
@@ -18,8 +20,9 @@ import (
 )
 
 func GetTrainTime(sta_station, des_station string) string {
-	url := "https://transit.yahoo.co.jp/search/result?flatlon=&fromgid=&from=" + sta_station + "&tlatlon=&togid=&to=" + des_station + "&viacode=&via=&viacode=&via=&viacode=&via=&y=&m=&d=&hh=&m2=&m1=&type=1&ticket=ic&expkind=1&ws=3&s=0&al=1&shin=1&ex=1&hb=1&lb=1&sr=1&kw=" + des_station
-
+	encode_sta := url.QueryEscape(sta_station) //URL encode
+	encode_des := url.QueryEscape(des_station) //URL encode
+	url := "https://transit.yahoo.co.jp/search/result?from=" + encode_sta + "&to=" + encode_des + "&fromgid=&togid=&flatlon=&tlatlon=&via=&viacode=&y=&m=&d=&hh=&m1=&m2=&type=1&ticket=ic&expkind=1&userpass=1&ws=3&s=0&al=1&shin=1&ex=1&hb=1&lb=1&sr=1&"
 	// Getリクエスト
 	res, _ := http.Get(url)
 	defer res.Body.Close()
@@ -62,7 +65,7 @@ func InsertStation(sta_station, des_station, name string) string {
 	defer db.Close()
 
 	//mysqlにinsertする
-	error := db.Create(&data.Stations{
+	error := db.Create(&model.Stations{
 		Name:           name,
 		First_Station:  sta_station,
 		Second_Station: des_station,
@@ -82,7 +85,7 @@ func GetStation() string {
 	defer db.Close()
 
 	//
-	db_result := []*data.Stations{}
+	db_result := []*model.Stations{}
 	//select * from stationsと同義
 	error := db.Find(&db_result).Error
 	if error != nil {
@@ -121,7 +124,7 @@ func UseRoute(name string) string {
 	}
 	defer db.Close()
 	//
-	db_result := []*data.Stations{}
+	db_result := []*model.Stations{}
 	//select * from stations where name = "?"と同義
 	error := db.Where("name = ?", name).First(&db_result).Error
 	if error != nil {

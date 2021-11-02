@@ -1,4 +1,4 @@
-module url
+module github.com/yoshiryo/linebot
 
 go 1.11
 

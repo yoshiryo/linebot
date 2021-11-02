@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 
-	"url/train"
+	"github.com/yoshiryo/linebot/train"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/line/line-bot-sdk-go/linebot"
@@ -29,8 +30,9 @@ const helpMessage = `使い方
 
 func main() {
 
-	ChanellSecret := ""
-	ChanellToken := ""
+	ChanellSecret := os.Getenv("ChanellSecret")
+	fmt.Println(ChanellSecret)
+	ChanellToken := os.Getenv("ChanellToken")
 	Port := "8080"
 	bot, err := linebot.New(ChanellSecret, ChanellToken)
 	if err != nil {

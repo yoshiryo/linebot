@@ -16,17 +16,17 @@ import (
 	"golang.org/x/net/html/charset"
 )
 
-func Add_Manga(manga string) string {
-	t := getReleaseMangeTime(manga)
+func AddManga(manga string) string {
+	release_time := getReleaseMangeTime(manga)
 	db, err := db.SqlConnect()
 	if err != nil {
 		panic(err.Error())
 	}
 	defer db.Close()
 
-	error := db.Create(&data.Users{
+	error := db.Create(&data.Manga{
 		Name:     manga,
-		Release:  t,
+		Release:  release_time,
 		UpdateAt: getDate(),
 	}).Error
 	if error != nil {
@@ -58,12 +58,15 @@ func getReleaseMangeTime(manga string) string {
 	doc, _ := goquery.NewDocumentFromReader(reader)
 
 	// titleを抜き出し
-	t := doc.Find(".time").Text()
-	return t
+	return doc.Find(".time").Text()
 }
 
 func getDate() string {
 	const layout = "2006-01-02 15:04:05"
 	now := time.Now()
 	return now.Format(layout)
+}
+
+func InfoManga() string {
+
 }
