@@ -74,11 +74,13 @@ func getMangeList() [][]string {
 	}
 	return days_manga_list
 }
+
 func getDate() string {
 	const layout = "2006-01-02 15:04:05"
 	now := time.Now()
 	return now.Format(layout)
 }
+
 func getDates() []string {
 	const layout = "2006-01-02 15:04:05"
 	now := time.Now()
