@@ -1,6 +1,6 @@
 package model
 
-type Manga struct {
+type Mangas struct {
 	Name     string
 	UpdateAt string
 }

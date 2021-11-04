@@ -10,8 +10,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/yoshiryo/linebot/db"
-	"github.com/yoshiryo/linebot/model"
+	"github.com/yoshiryo/linebot/app1/db"
+	"github.com/yoshiryo/linebot/app1/model"
 
 	"github.com/PuerkitoBio/goquery"
 	_ "github.com/go-sql-driver/mysql"
@@ -91,7 +91,7 @@ func GetStation() string {
 	if error != nil {
 		fmt.Println(error)
 	} else if len(db_result) == 0 {
-		return "登録されてないよ！"
+		return "駅が登録されてないよ！"
 	}
 
 	result := ""

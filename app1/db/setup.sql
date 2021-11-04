@@ -19,3 +19,6 @@ CREATE TABLE linebot.mangas
 )DEFAULT CHARACTER SET=utf8;
 
 use linebot;
+INSERT INTO stations (name, first_station, second_station) VALUES ("行き", "東青梅", "立川");
+INSERT INTO mangas (name, updateAt) VALUES ("妖怪戦葬", "2021-11-04");
+INSERT INTO mangas (name, updateAt) VALUES ("マイホームヒーロー", "2021-11-04");

@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/line/line-bot-sdk-go/linebot"
-	"github.com/yoshiryo/linebot/train"
+	"github.com/yoshiryo/linebot/app1/train"
 )
 
 const verifyToken = "00000000000000000000000000000000"
