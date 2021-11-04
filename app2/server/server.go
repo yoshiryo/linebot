@@ -19,10 +19,14 @@ func Connect(cs, ct string) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	message := manga.AlertMangeReleaseDay()
+	if len(message) == 0 {
+		message = "最近漫画でねーなぁ。。。"
+	}
 	// テキストメッセージを生成する
-	message := linebot.NewTextMessage(manga.AlertMangeReleaseDay())
+	reply_message := linebot.NewTextMessage(message)
 	// テキストメッセージを友達登録しているユーザー全員に配信する
-	if _, err := bot.BroadcastMessage(message).Do(); err != nil {
+	if _, err := bot.BroadcastMessage(reply_message).Do(); err != nil {
 		log.Fatal(err)
 	}
 }
