@@ -17,12 +17,15 @@ import (
 	"golang.org/x/net/html/charset"
 )
 
+//新刊情報を知らせる
 func AlertMangeReleaseDay() string {
 	if getMangeList() == "漫画が登録されてないよ！" {
 		return "漫画が登録されてないよ！"
 	} else {
+		//DBに登録されている漫画のリスト
 		manga_list := strings.Split(getMangeList(), "　")
 		manga_list = manga_list[:len(manga_list)-1]
+		//三日以内に発売される漫画のリスト
 		release_list := getMangeReleaseList()
 		result := ""
 		for i, day_release := range release_list {
@@ -44,7 +47,9 @@ func AlertMangeReleaseDay() string {
 	}
 }
 
+//DBに登録されている漫画を取得
 func getMangeList() string {
+	//DBとの接続開始
 	db, err := db.SqlConnect()
 	if err != nil {
 		panic(err.Error())
@@ -68,6 +73,7 @@ func getMangeList() string {
 	return result
 }
 
+//三日以内の新刊情報
 func getMangeReleaseList() [][]string {
 	d := getDates()
 	url_list := []string{
@@ -121,6 +127,7 @@ func getDates() []string {
 	return dates
 }
 
+//文字列の最後の改行コードを取り除く
 func chop(s string) string {
 	s = strings.TrimRight(s, "\n")
 	if strings.HasSuffix(s, "\r") {
