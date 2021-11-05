@@ -17,14 +17,14 @@ func AddManga(manga string) string {
 	}
 	defer db.Close()
 
-	error := db.Create(&model.Manga{
+	error := db.Create(&model.Mangas{
 		Name:     manga,
 		UpdateAt: getDate(),
 	}).Error
 	if error != nil {
 		fmt.Println(error)
 	}
-	return ("追加しました")
+	return "漫画を追加したよ！"
 }
 
 func getDate() string {

@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/yoshiryo/linebot/server"
+	"github.com/yoshiryo/linebot/app1/server"
 )
 
 func main() {

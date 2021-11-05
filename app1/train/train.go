@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/yoshiryo/linebot/app1/db"
 	"github.com/yoshiryo/linebot/app1/model"
@@ -22,7 +23,16 @@ import (
 func GetTrainTime(sta_station, des_station string) string {
 	encode_sta := url.QueryEscape(sta_station) //URL encode
 	encode_des := url.QueryEscape(des_station) //URL encode
-	url := "https://transit.yahoo.co.jp/search/result?from=" + encode_sta + "&to=" + encode_des + "&fromgid=&togid=&flatlon=&tlatlon=&via=&viacode=&y=&m=&d=&hh=&m1=&m2=&type=1&ticket=ic&expkind=1&userpass=1&ws=3&s=0&al=1&shin=1&ex=1&hb=1&lb=1&sr=1&"
+	date := getDate()                          //2006-01-02 15:04:05
+	year := date[:4]
+	month := date[5:7]
+	day := date[8:10]
+	hour := date[11:13]
+	min1 := date[14:15]
+	min2 := date[15:16]
+	url := "https://transit.yahoo.co.jp/search/result?from=" + encode_sta + "&to=" + encode_des + "&fromgid=&togid=&flatlon=&tlatlon=&via=&viacode=&y=" + year + "&m=" + month + "&d=" + day + "&hh=" + hour + "&m1=" + min1 + "&m2=" + min2 + "&type=1&ticket=ic&expkind=1&userpass=1&ws=3&s=0&al=1&shin=1&ex=1&hb=1&lb=1&sr=1&"
+	fmt.Println(date)
+	fmt.Println(url)
 	// Getリクエスト
 	res, _ := http.Get(url)
 	defer res.Body.Close()
@@ -52,7 +62,8 @@ func GetTrainTime(sta_station, des_station string) string {
 	result = sta_station + "  " + des_station + "  所要時間" + "\n" +
 		result[:13] + "　" + result[13:18] +
 		result[18:31] + "　" + result[31:36] +
-		result[36:49] + "　" + result[49:54]
+		result[36:49] + "　" + result[49:54] + "\n" +
+		url
 	return result
 }
 
@@ -73,7 +84,7 @@ func InsertStation(sta_station, des_station, name string) string {
 	if error != nil {
 		fmt.Println(error)
 	}
-	return "追加しました！"
+	return "駅を追加したよ！"
 }
 
 func GetStation() string {
@@ -136,4 +147,13 @@ func UseRoute(name string) string {
 	second_station := db_result[0].Second_Station
 	//GetTrainTime関数を使って時刻を割り出してreturn
 	return GetTrainTime(first_station, second_station)
+}
+
+func getDate() string {
+	const layout = "2006-01-02 15:04:05"
+	now := time.Now()
+	nowUTC := now.UTC()
+	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
+	nowJST := nowUTC.In(jst)
+	return nowJST.Format(layout)
 }

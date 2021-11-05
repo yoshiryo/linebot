@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/line/line-bot-sdk-go/linebot"
+	"github.com/yoshiryo/linebot/app1/manga"
 	"github.com/yoshiryo/linebot/app1/train"
 )
 
@@ -84,6 +85,11 @@ func getReplyMessage(event *linebot.Event, bot *linebot.Client) (replyMessage st
 			if len(words) == 3 {
 				return train.GetTrainTime(words[1], words[2])
 			}
+		} else if strings.Contains(message.Text, "!addmanga") {
+			words := strings.Fields(message.Text)
+			if len(words) == 2 {
+				return manga.AddManga(words[1])
+			}
 		} else if strings.Contains(message.Text, "!addstation") {
 			words := strings.Fields(message.Text)
 			if len(words) == 4 {
@@ -99,15 +105,6 @@ func getReplyMessage(event *linebot.Event, bot *linebot.Client) (replyMessage st
 		} else if strings.Contains(message.Text, "!help") {
 			return helpMessage
 		}
-		// !addmangaを含むとき
-		/*
-			else if strings.Contains(message.Text, "!addmanga") {
-				words := strings.Fields(message.Text)
-				if len(words) == 2 {
-					return manga.Add_Manga(words[1])
-				}
-			}
-		*/
 		// そうじゃないときはオウム返しする
 		return message.Text
 	// スタンプが来たとき

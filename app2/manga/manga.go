@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 	"time"
@@ -32,12 +33,17 @@ func AlertMangeReleaseDay() string {
 			for _, manga := range manga_list {
 				for _, release_manga := range day_release {
 					if strings.Contains(release_manga, manga) {
+						encode_manga := url.QueryEscape(manga) //URL encode
+						buy_url := "https://www.cmoa.jp/search/result/?header_word=" + encode_manga + "&x=0&y=0"
 						if i == 0 {
-							result += "今日" + manga + "が発売だよ!" + "\n"
+							result += "今日" + release_manga + "が発売だよ!" + "\n" +
+								buy_url + "\n"
 						} else if i == 1 {
-							result += "明日" + manga + "が発売だよ!" + "\n"
+							result += "明日" + release_manga + "が発売だよ!" + "\n" +
+								buy_url + "\n"
 						} else {
-							result += "明後日" + manga + "が発売だよ!" + "\n"
+							result += "明後日" + release_manga + "が発売だよ!" + "\n" +
+								buy_url + "\n"
 						}
 					}
 				}
