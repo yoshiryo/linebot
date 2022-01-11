@@ -5,7 +5,7 @@ import "github.com/jinzhu/gorm"
 func SqlConnect() (database *gorm.DB, err error) {
 	DBMS := "mysql"
 	USER := "ueoai"
-	PASS := "ueoai0622"
+	PASS := ""
 	PROTOCOL := "tcp(localhost:3306)"
 	DBNAME := "linebot"
 
